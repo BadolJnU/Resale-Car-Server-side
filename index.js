@@ -42,6 +42,7 @@ async function run(){
         const userCollection = client.db('ResaleCar').collection('Users');
         const categoriesCollection = client.db('ResaleCar').collection('CarCategory');
         const productCollection = client.db('ResaleCar').collection('Products');
+        const advertiseCollection = client.db('ResaleCar').collection('AdvertiseProducts');
 
         //save user in database
         app.post('/user', async(req, res) => {
@@ -121,6 +122,46 @@ async function run(){
             const result = await productCollection.find(query).toArray();
             res.send(result);
         })
+
+        //delete product by seller
+        app.delete('/products/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await productCollection.deleteOne(query);
+            //console.log(result);
+            res.send(result);
+        })
+
+        //advertise product
+
+        app.put('/products/advertise/:id', async(req,res) => {
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const options = {upsert: true};
+            const updateDoc = {
+                $set: {
+                    action: 'advertise'
+                }
+            }
+
+            const result = await productCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        });
+        //remove advertise product
+
+        app.put('/products/removeAdvertise/:id', async(req,res) => {
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const options = {upsert: true};
+            const updateDoc = {
+                $set: {
+                    action: ''
+                }
+            }
+
+            const result = await productCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        });
 
     }
     finally {
