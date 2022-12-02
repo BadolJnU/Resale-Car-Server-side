@@ -42,7 +42,7 @@ async function run(){
         const userCollection = client.db('ResaleCar').collection('Users');
         const categoriesCollection = client.db('ResaleCar').collection('CarCategory');
         const productCollection = client.db('ResaleCar').collection('Products');
-        const advertiseCollection = client.db('ResaleCar').collection('AdvertiseProducts');
+        const bookingCollection = client.db('ResaleCar').collection('BookingProducts');
 
         //save user in database
         app.post('/user', async(req, res) => {
@@ -162,6 +162,13 @@ async function run(){
             const result = await productCollection.updateOne(filter, updateDoc, options);
             res.send(result);
         });
+
+        //booking product api
+        app.post('/booking', async(req, res) => {
+            const bookingProduct = req.body;
+            const result = await bookingCollection.insertOne(bookingProduct);
+            res.send(result);
+        })
 
     }
     finally {
