@@ -170,6 +170,41 @@ async function run(){
             res.send(result);
         })
 
+        //get booking product api
+
+        app.get('/booking', async(req, res) => {
+            const email = req.query.email;
+            const query = {
+                email: email
+            }
+            const result = await bookingCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        //delete booking
+        app.delete('/booking/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await bookingCollection.deleteOne(query);
+            //console.log(result);
+            res.send(result);
+        })
+
+        app.get('/users/role', async (req, res) => {
+            const email = req.query.email;
+            const query = { email:email }
+            const user = await userCollection.findOne(query);
+            if(user?.role === 'Admin'){
+                res.send({ isRole: 'Admin' });
+            }
+            if(user?.role === 'Seller'){
+                res.send({ isRole: 'Seller' });
+            }
+            if(user?.role === 'Buyer'){
+                res.send({ isRole: 'Buyer' });
+            }
+        })
+
     }
     finally {
 
